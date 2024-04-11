@@ -1,5 +1,6 @@
 # Test Files
 *.temp.*
+*_temp_*
 
 # Windows
 Thumbs.db
