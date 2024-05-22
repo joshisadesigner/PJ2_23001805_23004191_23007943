@@ -45,6 +45,7 @@ public class Gramatica {
             for (String terminal : terminals) {
                 transitions.get(state).put(terminal, new ArrayList<>());
             }
+            transitions.get(state).put("λ", new ArrayList<>());
         }
 
         for (String rule : productionRules) {
@@ -59,6 +60,7 @@ public class Gramatica {
                 for (String terminal : terminals) {
                     transitions.get(lhs).put(terminal, new ArrayList<>());
                 }
+                transitions.get(lhs).put("λ", new ArrayList<>());
             }
 
             String currentState = lhs;
@@ -71,6 +73,7 @@ public class Gramatica {
                     for (String terminal : terminals) {
                         transitions.get(currentState).put(terminal, new ArrayList<>());
                     }
+                    transitions.get(currentState).put("λ", new ArrayList<>());
                 }
 
                 if (terminals.contains(symbol)) {
@@ -81,6 +84,7 @@ public class Gramatica {
                     for (String terminal : terminals) {
                         transitions.get(nextState).put(terminal, new ArrayList<>());
                     }
+                    transitions.get(nextState).put("λ", new ArrayList<>());
                     transitions.get(currentState).get(symbol).add(nextState);
                     currentState = nextState;
                 } else {
