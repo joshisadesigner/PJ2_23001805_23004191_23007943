@@ -217,9 +217,10 @@ public class AFN {
 						int nextStateInt = Integer.parseInt(nextState.trim());
 
 						// Intenta agregar el estado destino al conjunto 'statesWithLambda'. Si es nuevo, lo agrega a 'newStates'.
-						if (statesWithLambda.add(nextStateInt)) {
+//						if (statesWithLambda.add(nextStateInt)) {
+						if (!statesWithLambda.contains(nextStateInt) && newStates.add(nextStateInt)) {
 							// Agrega el estado a 'newStates' y marca que hubo un cambio.
-							newStates.add(nextStateInt);
+//							newStates.add(nextStateInt);
 							changed = true;
 						}
 					}
