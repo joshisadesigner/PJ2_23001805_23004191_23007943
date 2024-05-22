@@ -15,7 +15,7 @@ public class AFN {
 		Scanner scanner = new Scanner(file);
 
 		alphabet = scanner.nextLine().split(",");
-		int maxSymbols = alphabet.length + 1;
+		int maxSymbols = alphabet.length;
 
 		int maxStates = Integer.parseInt(scanner.nextLine());
 
@@ -74,8 +74,8 @@ public class AFN {
 				Set<Integer> newState = new HashSet<>();
 
 				for (int state : currentState) {
-					if (state < transitions.get(symbolIndex + 1).size()) {
-						List<List<String>> transitionsForState = transitions.get(symbolIndex + 1).get(state);
+					if (state < transitions.get(symbolIndex).size()) {
+						List<List<String>> transitionsForState = transitions.get(symbolIndex).get(state);
 
 						for (List<String> transition : transitionsForState) {
 							for (String nextState : transition) {

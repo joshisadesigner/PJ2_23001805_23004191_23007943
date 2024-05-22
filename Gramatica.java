@@ -38,9 +38,20 @@ public class Gramatica {
 
         try (PrintWriter out = new PrintWriter(afnPath)) {
             out.println(String.join(",", terminals));
-            int stateCount = nonTerminals.size() + 2; // +1 para el estado final y +1 para el estado inicial
+            int stateCount = nonTerminals.size() + 1;
+            Map<String, Integer> stateMap = new HashMap<>();
+            int currentState = 0;
+            stateMap.put(startSymbol, currentState++);
+
+            for (String nt : nonTerminals) {
+                if (!stateMap.containsKey(nt)) {
+                    stateMap.put(nt, currentState++);
+                }
+            }
+
+            int finalState = currentState;
+            stateCount = finalState + 1;
             out.println(stateCount);
-            int finalState = stateCount - 1;
             out.println(finalState);
 
             List<List<Set<Integer>>> transitions = new ArrayList<>();
@@ -54,12 +65,9 @@ public class Gramatica {
 
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey();
-                int fromState = nonTerminals.indexOf(fromNonTerminal);
-                if (fromState == -1) {
-                    fromState = nonTerminals.size();
-                }
+                int fromState = stateMap.get(fromNonTerminal);
                 for (String rule : entry.getValue()) {
-                    int currentState = fromState;
+                    currentState = fromState;
                     for (int i = 0; i < rule.length(); i++) {
                         String symbol = String.valueOf(rule.charAt(i));
                         if (terminals.contains(symbol)) {
@@ -67,25 +75,25 @@ public class Gramatica {
                             int nextState;
 
                             if (i == rule.length() - 1) {
-                                nextState = finalState;
+                                if (Character.isUpperCase(rule.charAt(i))) {
+                                    nextState = stateMap.get(symbol);
+                                } else {
+                                    nextState = finalState;
+                                }
                             } else {
-                                nextState = stateCount++;
-                                for (List<Set<Integer>> stateTransitions : transitions) {
-                                    stateTransitions.add(new HashSet<>());
+                                if (Character.isUpperCase(rule.charAt(i + 1))) {
+                                    nextState = stateMap.get(String.valueOf(rule.charAt(i + 1)));
+                                    i++;
+                                } else {
+                                    nextState = currentState + 1;
                                 }
                             }
 
                             transitions.get(symbolIndex).get(currentState).add(nextState);
                             currentState = nextState;
                         } else if (nonTerminals.contains(symbol)) {
-                            if (i != rule.length() - 1) {
-                                throw new IllegalArgumentException("No terminal '" + symbol + "' debe ser el último símbolo en la regla '" + rule + "'");
-                            }
-
-                            int nextState = nonTerminals.indexOf(symbol);
-                            transitions.get(terminals.size() - 1).get(currentState).add(nextState);
-                        } else {
-                            throw new IllegalArgumentException("Símbolo '" + symbol + "' no encontrado en las listas de terminales o no terminales.");
+                            int nextState = stateMap.get(symbol);
+                            transitions.get(terminals.size()).get(currentState).add(nextState);
                         }
                     }
                 }
