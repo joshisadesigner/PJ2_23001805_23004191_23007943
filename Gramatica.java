@@ -27,6 +27,12 @@ public class Gramatica {
                 }
             }
         }
+
+        // Imprimir el Map
+        AFN.printMagenta(true, "Productions:");
+        for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
+            AFN.printMagenta(true, entry.getKey() + " -> " + String.join(" | ", entry.getValue()));
+        }
     }
 
     public void toAFN(String afnPath) throws FileNotFoundException {
