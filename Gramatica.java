@@ -20,9 +20,9 @@ public class Gramatica {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
                 if (!line.isEmpty()) {
-                    String[] parts = line.split("->");
-                    String nonTerminal = parts[0].trim();
-                    String[] rules = parts[1].trim().split("\\|");
+                    String[] parts = line.split("->"); // [W,abX]
+                    String nonTerminal = parts[0].trim();  // nonTerminal = W
+                    String[] rules = parts[1].trim().split("\\|"); // rules = abX
                     productions.computeIfAbsent(nonTerminal, k -> new ArrayList<>()).addAll(Arrays.asList(rules));
                 }
             }
@@ -39,52 +39,73 @@ public class Gramatica {
         File outputFile = new File(afnPath);
         File parentDir = outputFile.getParentFile();
         if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();
+            parentDir.mkdirs(); // /new/file.afn
         }
 
         try (PrintWriter out = new PrintWriter(afnPath)) {
-            out.println(String.join(",", terminals));
+            out.println(String.join(",", terminals)); // [a,b,c,d]
             int stateCount;
             Map<String, Integer> stateMap = new HashMap<>();
-            int currentState = 1; // Start state numbering from 1
-            stateMap.put(startSymbol, currentState++);
+            int currentState = 1; // Estado inicial 1
+//            System.out.println("currentState = " + currentState);
+//            System.out.println("currentState++ = " + currentState++);
+            stateMap.put(startSymbol, currentState); // W, 2
 
-            for (String nt : nonTerminals) {
+            for (String nt : nonTerminals) { // [W, X, Y, Z]
                 if (!stateMap.containsKey(nt)) {
                     stateMap.put(nt, currentState++);
                 }
             }
 
-            int finalState = currentState;
-            stateCount = finalState + 1;
+            int finalState = currentState; // currentState = 5
+            stateCount = finalState + 1; // currentState = 6
             out.println(stateCount);
             out.println(finalState);
 
             List<List<Set<Integer>>> transitions = new ArrayList<>();
-            for (int i = 0; i <= terminals.size(); i++) { // Include one more for lambda transitions
+            for (int i = 0; i <= terminals.size(); i++) { // Incluye transición de Lambda
                 List<Set<Integer>> stateTransitions = new ArrayList<>();
-                for (int j = 0; j < stateCount; j++) {
+                for (int j = 0; j < currentState; j++) {
                     stateTransitions.add(new HashSet<>());
                 }
                 transitions.add(stateTransitions);
             }
 
+            System.out.println("Transitions");
+            for (int i = 0; i< transitions.size(); i++) {
+                System.out.println("Symbol index " + i + ":");
+                List<Set<Integer>> stateTransistions = transitions.get(i);
+                for (int j = 0; j < stateTransistions.size(); j++) {
+                    System.out.println(" State " + j + " -> " + stateTransistions.get(j));
+                }
+            }
+
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
-                String fromNonTerminal = entry.getKey();
-                int fromState = stateMap.get(fromNonTerminal);
+                String fromNonTerminal = entry.getKey(); // W
+                //System.out.print("Key: " + entry.getKey());
+                int fromState = stateMap.get(fromNonTerminal); // 2
                 for (String rule : entry.getValue()) {
-                    currentState = fromState;
-                    int prevState = currentState; // To handle the lambda transitions properly
-                    for (int i = 0; i < rule.length(); i++) {
+//                    System.out.println("Rule: " + entry.getValue());
+                    currentState = fromState; // 2
+                    int prevState = currentState; // Para manejar las transiciones de Lambda, 2
+                    for (int i = 0; i < rule.length(); i++) { // 0
                         String symbol = String.valueOf(rule.charAt(i));
+                        System.out.println("ChartAt: " + rule.charAt(i)); // a
                         if (terminals.contains(symbol)) {
-                            int symbolIndex = terminals.indexOf(symbol) + 1;
+                            int symbolIndex = terminals.indexOf(symbol) + 1; //1
                             int nextState;
 
-                            if (i == rule.length() - 1) {
-                                nextState = finalState;
+                            if (i == rule.length() - 1) { // 2 = 2
+                                nextState = finalState; // 6
                             } else {
                                 if (Character.isUpperCase(rule.charAt(i + 1))) {
+// -------> Analysis here!
+//                                    System.out.print(rule.charAt(i + 1) + " = ");
+                                    System.out.println("character = " + String.valueOf(rule.charAt(i + 1)));
+                                    System.out.println(stateMap.get("W"));
+                                    System.out.println("nextState = " + stateMap.get(String.valueOf(rule.charAt(i + 1))));
+
+
                                     nextState = stateMap.get(String.valueOf(rule.charAt(i + 1)));
                                     i++;
                                 } else {
