@@ -37,7 +37,7 @@ public class Gramatica {
         for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
             AFN.printMagenta(true, entry.getKey() + " -> " + String.join(" | ", entry.getValue()));
         }
-        System.out.println("--------\n");
+        System.out.println("--------");
     }
 
     public void toAFN(String afnPath) throws FileNotFoundException {
@@ -84,6 +84,12 @@ public class Gramatica {
 //                    System.out.println(" State " + j + " -> " + stateTransistions.get(j));
 //                }
 //            }
+
+            System.out.println("stateMap: \n[");
+            for (Map.Entry<String, Integer> entry : stateMap.entrySet()) {
+                System.out.println("    Non-Terminal: " + entry.getKey() + ", State: " + entry.getValue());
+            }
+            System.out.println("]");
 
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey(); // W
