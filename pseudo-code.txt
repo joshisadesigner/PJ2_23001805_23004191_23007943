@@ -1,0 +1,105 @@
+Convertir .gld a .afn
+
+1. Leer y analizar el archivo .gld:
+        Leer la primera línea para obtener los no terminales: W, X, Y, Z
+        Leer la segunda línea para obtener los terminales: a, b, c, d
+        Leer la tercera línea para obtener el símbolo inicial: W
+        Leer las siguientes líneas para obtener las reglas de producción:
+            W->abX
+            X->bX
+            X->b
+            X->cY
+            Y->cY
+            Y->c
+            Y->d
+2. Inicializar el AFN:
+        Crear un AFN con:
+            Alfabeto: {a, b, c, d}
+            Estados: {0, 1, 2, 3, 4, 5}
+            Estado inicial: 0
+            Estado final: 5
+3. Agregar transiciones:
+        Para cada regla de producción, agregar transiciones al AFN:
+            W->abX:
+                Agregar transición desde el estado 0 (W) al estado 1 con 'a'
+                Agregar transición desde el estado 1 al estado 2 con 'b'
+                Agregar transición desde el estado 2 al estado 3 (X)
+            X->bX:
+                Agregar transición desde el estado 3 (X) al estado 3 con 'b'
+            X->b:
+                Agregar transición desde el estado 3 (X) al estado 5 con 'b'
+            X->cY:
+                Agregar transición desde el estado 3 (X) al estado 4 con 'c'
+                Agregar transición desde el estado 4 al estado 3 (Y)
+            Y->cY:
+                Agregar transición desde el estado 3 (Y) al estado 3 con 'c'
+            Y->c:
+                Agregar transición desde el estado 3 (Y) al estado 5 con 'c'
+            Y->d:
+                Agregar transición desde el estado 3 (Y) al estado 5 con 'd'
+4. Definir el archivo .afn:
+        Alfabeto: a,b,c,d
+        Número de estados: 6
+        Estado final: 5
+        Transiciones:
+            a:
+            0 -> 1
+            1 -> 2
+            2 -> 3
+            b:
+            3 -> 3,5
+            c:
+            3 -> 4
+            4 -> 3
+            d:
+            3 -> 5
+
+
+Convertir .afn a .afd
+1. Inicializar el AFD:
+        Crear un AFD con:
+            Alfabeto: {a, b, c, d}
+            Estados: {0, 1, 2, 3, 4, 5}
+            Estado inicial: 1
+            Estados finales: {3, 4, 5}
+2. Aplicar el algoritmo de conversión de AFN a AFD:
+        1. Encontrar la clausura lambda del estado inicial (0)
+        2. Agregar la clausura a estadosD sin marcar y definirla como estado inicial
+        3. Mientras haya estados no marcados en estadosD:
+            1. Marcar el estado T
+            2. Para cada símbolo x del alfabeto:
+                1. U = clausura-lambda(T con transición x)
+                2. Si U no está en estadosD:
+                    1. Agregar U como estado no marcado a estadosD
+                3. Transición de T con x a U
+        4. Encontrar estados finales del AFD:
+            - Cualquier estado en el AFD que contenga al menos un estado final del AFN original
+3. Definir el archivo .afd:
+        Alfabeto: a,b,c,d
+        Número de estados: 6
+        Estados finales: 3, 4, 5
+        Transiciones:
+            a:
+            0 -> 2
+            1 -> 0
+            2 -> 0
+            3 -> 0
+            4 -> 0
+            b:
+            0 -> 0
+            1 -> 3
+            2 -> 3
+            3 -> 0
+            4 -> 0
+            c:
+            0 -> 0
+            1 -> 0
+            2 -> 4
+            3 -> 4
+            4 -> 0
+            d:
+            0 -> 0
+            1 -> 0
+            2 -> 0
+            3 -> 5
+            4 -> 0
