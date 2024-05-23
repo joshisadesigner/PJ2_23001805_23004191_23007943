@@ -89,16 +89,28 @@ public class Gramatica {
             for (Map.Entry<String, Integer> entry : stateMap.entrySet()) {
                 System.out.println("    Non-Terminal: " + entry.getKey() + ", State: " + entry.getValue());
             }
-            System.out.println("]");
+            System.out.println("]\n--------");
 
+            System.out.println("productions: loop");
+            int loopProductionsCounter = 0;
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey(); // W
-                //System.out.print("Key: " + entry.getKey());
+
+                System.out.println("    fromNonTerminal: " + entry.getKey());
+
                 int fromState = stateMap.get(fromNonTerminal); // 2
-//                System.out.println("fromState: " + fromState);
+
+                System.out.println("    fromState: " + fromState);
+                System.out.println("    entry: loop");
+
                 for (String rule : entry.getValue()) {
-//                    System.out.println("Rule: " + entry.getValue());
+
+                    System.out.println("        Rule: " + rule);
+
                     currentState = fromState; // 2
+
+                    System.out.println("        currentState: " + currentState);
+
                     int prevState = currentState; // Para manejar las transiciones de Lambda, 2
                     for (int i = 0; i < rule.length(); i++) { // 0
                         String symbol = String.valueOf(rule.charAt(i));
@@ -134,6 +146,8 @@ public class Gramatica {
                         }
                     }
                 }
+
+                System.out.println("--------");
             }
 
             for (List<Set<Integer>> symbolTransitions : transitions) {
