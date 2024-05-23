@@ -28,11 +28,16 @@ public class Gramatica {
             }
         }
 
+        System.out.println("nonTerminals" + nonTerminals + "\n--------");
+        System.out.println("terminals: " + terminals + "\n--------");
+        System.out.println("startSymbol: " + startSymbol + "\n--------");
+
         // Imprimir el Map
         AFN.printMagenta(true, "Productions:");
         for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
             AFN.printMagenta(true, entry.getKey() + " -> " + String.join(" | ", entry.getValue()));
         }
+        System.out.println("--------\n");
     }
 
     public void toAFN(String afnPath) throws FileNotFoundException {
@@ -49,7 +54,7 @@ public class Gramatica {
             int currentState = 1; // Estado inicial 1
 //            System.out.println("currentState = " + currentState);
 //            System.out.println("currentState++ = " + currentState++);
-            stateMap.put(startSymbol, currentState); // W, 2
+            stateMap.put(startSymbol, currentState++); // W, 2
 
             for (String nt : nonTerminals) { // [W, X, Y, Z]
                 if (!stateMap.containsKey(nt)) {
@@ -71,26 +76,27 @@ public class Gramatica {
                 transitions.add(stateTransitions);
             }
 
-            System.out.println("Transitions");
-            for (int i = 0; i< transitions.size(); i++) {
-                System.out.println("Symbol index " + i + ":");
-                List<Set<Integer>> stateTransistions = transitions.get(i);
-                for (int j = 0; j < stateTransistions.size(); j++) {
-                    System.out.println(" State " + j + " -> " + stateTransistions.get(j));
-                }
-            }
+//            System.out.println("Transitions");
+//            for (int i = 0; i< transitions.size(); i++) {
+//                System.out.println("Symbol index " + i + ":");
+//                List<Set<Integer>> stateTransistions = transitions.get(i);
+//                for (int j = 0; j < stateTransistions.size(); j++) {
+//                    System.out.println(" State " + j + " -> " + stateTransistions.get(j));
+//                }
+//            }
 
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey(); // W
                 //System.out.print("Key: " + entry.getKey());
                 int fromState = stateMap.get(fromNonTerminal); // 2
+//                System.out.println("fromState: " + fromState);
                 for (String rule : entry.getValue()) {
 //                    System.out.println("Rule: " + entry.getValue());
                     currentState = fromState; // 2
                     int prevState = currentState; // Para manejar las transiciones de Lambda, 2
                     for (int i = 0; i < rule.length(); i++) { // 0
                         String symbol = String.valueOf(rule.charAt(i));
-                        System.out.println("ChartAt: " + rule.charAt(i)); // a
+                        //System.out.println("ChartAt: " + rule.charAt(i)); // a
                         if (terminals.contains(symbol)) {
                             int symbolIndex = terminals.indexOf(symbol) + 1; //1
                             int nextState;
@@ -101,9 +107,9 @@ public class Gramatica {
                                 if (Character.isUpperCase(rule.charAt(i + 1))) {
 // -------> Analysis here!
 //                                    System.out.print(rule.charAt(i + 1) + " = ");
-                                    System.out.println("character = " + String.valueOf(rule.charAt(i + 1)));
-                                    System.out.println(stateMap.get("W"));
-                                    System.out.println("nextState = " + stateMap.get(String.valueOf(rule.charAt(i + 1))));
+//                                    System.out.println("character = " + String.valueOf(rule.charAt(i + 1)));
+//                                    System.out.println(stateMap.get("W"));
+//                                    System.out.println("nextState = " + stateMap.get(String.valueOf(rule.charAt(i + 1))));
 
 
                                     nextState = stateMap.get(String.valueOf(rule.charAt(i + 1)));
