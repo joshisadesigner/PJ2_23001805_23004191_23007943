@@ -38,9 +38,9 @@ public class Gramatica {
 
         try (PrintWriter out = new PrintWriter(afnPath)) {
             out.println(String.join(",", terminals));
-            int stateCount = nonTerminals.size() + 1;
+            int stateCount;
             Map<String, Integer> stateMap = new HashMap<>();
-            int currentState = 0;
+            int currentState = 1; // Start state numbering from 1
             stateMap.put(startSymbol, currentState++);
 
             for (String nt : nonTerminals) {
@@ -55,7 +55,7 @@ public class Gramatica {
             out.println(finalState);
 
             List<List<Set<Integer>>> transitions = new ArrayList<>();
-            for (int i = 0; i < terminals.size(); i++) {
+            for (int i = 0; i <= terminals.size(); i++) { // Include one more for lambda transitions
                 List<Set<Integer>> stateTransitions = new ArrayList<>();
                 for (int j = 0; j < stateCount; j++) {
                     stateTransitions.add(new HashSet<>());
@@ -68,32 +68,30 @@ public class Gramatica {
                 int fromState = stateMap.get(fromNonTerminal);
                 for (String rule : entry.getValue()) {
                     currentState = fromState;
+                    int prevState = currentState; // To handle the lambda transitions properly
                     for (int i = 0; i < rule.length(); i++) {
                         String symbol = String.valueOf(rule.charAt(i));
                         if (terminals.contains(symbol)) {
-                            int symbolIndex = terminals.indexOf(symbol);
+                            int symbolIndex = terminals.indexOf(symbol) + 1;
                             int nextState;
 
                             if (i == rule.length() - 1) {
-                                if (Character.isUpperCase(rule.charAt(i))) {
-                                    nextState = stateMap.get(symbol);
-                                } else {
-                                    nextState = finalState;
-                                }
+                                nextState = finalState;
                             } else {
                                 if (Character.isUpperCase(rule.charAt(i + 1))) {
                                     nextState = stateMap.get(String.valueOf(rule.charAt(i + 1)));
                                     i++;
                                 } else {
                                     nextState = currentState + 1;
+                                    currentState = nextState; // Update currentState for next iteration
                                 }
                             }
 
-                            transitions.get(symbolIndex).get(currentState).add(nextState);
-                            currentState = nextState;
+                            transitions.get(symbolIndex).get(prevState).add(nextState);
+                            prevState = nextState; // Update prevState for next transition
                         } else if (nonTerminals.contains(symbol)) {
                             int nextState = stateMap.get(symbol);
-                            transitions.get(terminals.size()).get(currentState).add(nextState);
+                            transitions.get(0).get(prevState).add(nextState); // Lambda transitions
                         }
                     }
                 }
@@ -128,7 +126,7 @@ public class Gramatica {
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
                 boolean accepted = false; // Implementar lógica de evaluación
-                System.out.println("La cadena '" + line + "' es " + (accepted ? "aceptada" : "rechazada") + " por la gramática.");
+                System.out.println("La cadena '" + line + "' es " + "rechazada" + " por la gramática.");
             }
         } catch (IOException e) {
             System.err.println("Error al leer entrada: " + e.getMessage());
