@@ -166,12 +166,12 @@ public class Gramatica {
                         } else if (nonTerminals.contains(symbol)) {
                             int nextState = stateMap.get(symbol);
                             System.out.println("| | |- *symbol: " + symbol + ", ");
+                            System.out.println("| | |- *prevState: " + prevState + ", ");
                             System.out.println("| | |- *nextState = " + nextState + ", ");
                             System.out.println("| | |- *fromState: " + fromState + ", ");
                             System.out.println("| | ");
 
                             transitions.get(0).get(prevState).add(nextState); // Lambada transitions
-//                            --prevState;
                         }
                     }
 
@@ -215,6 +215,7 @@ public class Gramatica {
         AFN afn = new AFN("temp.afn");
         afn.toAFD(afdPath);
     }
+
 
     public void check() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
