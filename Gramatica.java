@@ -77,6 +77,19 @@ public class Gramatica {
                 transitions.add(stateTransitions);
             }
 
+            System.out.println("Transitions");
+            for (int i = 0; i< transitions.size(); i++) {
+                System.out.print("[");
+                System.out.print(i + ": ");
+                System.out.print("  [");
+                List<Set<Integer>> stateTransistions = transitions.get(i);
+                for (int j = 0; j < stateTransistions.size(); j++) {
+                    System.out.print(stateTransistions.get(j) + ", ");
+                }
+                System.out.print("  ]");
+                System.out.println("]");
+            }
+
             System.out.println("stateMap: \n[");
             for (Map.Entry<String, Integer> entry : stateMap.entrySet()) {
                 System.out.println("    Non-Terminal: " + entry.getKey() + ", State: " + entry.getValue());
@@ -85,78 +98,100 @@ public class Gramatica {
 
             int loopProductionsCounter = 1;
 
+            int stateCounter;
+            ArrayList<String> rulesList = new ArrayList<>();
+
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey(); // W
 
                 int fromState = stateMap.get(fromNonTerminal); // 1
 
-                System.out.println("PRODUCTIONS: loop " + loopProductionsCounter++ + "/" + (productions.size()));
-                System.out.print("|- fromNonTerminal: " + entry.getKey() + ", ");
-                System.out.println("fromState: " + fromState);
+//                System.out.println("PRODUCTIONS: loop " + loopProductionsCounter++ + "/" + (productions.size()));
+//                System.out.print("|- fromNonTerminal: " + entry.getKey() + ", ");
+//                System.out.println("fromState: " + fromState);
+                System.out.println("entry: " + entry);
 
                 int loopEntryCounter = 1;
+                int prevState = 0; // Para manjar las transiciones de Lambda, 2
 
                 for (String rule : entry.getValue()) {
+//                    System.out.println("| |- ENTRY: loop " + loopEntryCounter++ + "/" + (entry.getValue().size()));
+//                    System.out.print("| | |- Rule: " + rule + ", ");
+                    AFN.printMagenta(true, "| |- Rule: " + rule + ", ");
 
-                    System.out.println("| |- ENTRY: loop " + loopEntryCounter++ + "/" + (entry.getValue().size()));
-                    System.out.print("| | |- Rule: " + rule + ", ");
+                    if (!rulesList.contains(rule)) {
+                        rulesList.add(rule);
+                    }
 
-                    currentState = fromState; // 2
+                    stateCounter = rulesList.indexOf(rule);
 
-                    System.out.println("currentState: " + currentState);
-
-                    int prevState = currentState; // Para manjar las transiciones de Lambda, 2
                     for (int i = 0; i < rule.length(); i++) {
                         String symbol = String.valueOf(rule.charAt(i));
 
-                        System.out.println("| | | |- RULE: loop " + (i + 1) + "/" + rule.length());
-                        System.out.print("| | | | |- symbol: " + symbol + ", ");
+//                        System.out.println("| | | |- RULE: loop " + (i + 1) + "/" + rule.length());
+//                        System.out.print("| | | | |- symbol: " + symbol + ", ");
 
                         if (terminals.contains(symbol)) {
                             int symbolIndex = terminals.indexOf(symbol) + 1; //1
                             int nextState;
 
-                            System.out.print("symbolIndex: " + symbolIndex + ", ");
-
                             if (i == rule.length() - 1) { // 2 = 2
-                                nextState = finalState; // 6
-
-                                System.out.print("nextState: " + nextState + ", ");
+                                nextState = ++fromState; // 6
 //                                System.out.print("rule loop final... ");
+                                ++prevState;
                             } else {
                                 if (Character.isUpperCase(rule.charAt(i + 1))) {
-                                    nextState = stateMap.get(String.valueOf(rule.charAt(i + 1)));
+                                    nextState = stateMap.get(String.valueOf(rule.charAt(i + 1))) + 1;
+                                    ++prevState;
 
-                                    System.out.print("nextState > " + nextState + ", ");
-                                    System.out.print("nextCharUpper: " + Character.isUpperCase(rule.charAt(i + 1)) + ", ");
+//                                    System.out.println("| | |- nextCharUpper: " + Character.isUpperCase(rule.charAt(i + 1)) + ", ");
 
-                                    i++;
+//                                    i++;
                                 } else {
-                                    nextState = currentState + 1;
-                                    currentState = nextState;
-
-                                    System.out.print("nextState = " + nextState + ", ");
-                                    System.out.print("currentState = " + currentState + ", ");
+                                    nextState = fromState + 1;
+//                                    currentState = nextState;
                                 }
                             }
-                            transitions.get(symbolIndex).get(prevState).add(nextState);
-                            prevState = nextState; // Update prevState for next transition
 
-                            System.out.println("prevState: " + prevState + ", ");
+                            System.out.println("| | |- symbolIndex: " + symbolIndex + ", ");
+                            System.out.println("| | |- prevState: " + prevState + ", ");
+                            System.out.println("| | |- nextState = " + nextState + ", ");
+                            System.out.println("| | |- stateCounter = " + stateCounter + ", ");
+                            System.out.println("| | |- symbol: " + symbol + ", ");
+                            System.out.println("| | |- fromState: " + fromState + ", ");
+                            System.out.println("| | ");
+
+                            transitions.get(symbolIndex).get(prevState).add(nextState);
 
                         } else if (nonTerminals.contains(symbol)) {
                             int nextState = stateMap.get(symbol);
-
-                            System.out.println("nextState = " + nextState + ", ");
+                            System.out.println("| | |- *symbol: " + symbol + ", ");
+                            System.out.println("| | |- *nextState = " + nextState + ", ");
+                            System.out.println("| | |- *fromState: " + fromState + ", ");
+                            System.out.println("| | ");
 
                             transitions.get(0).get(prevState).add(nextState); // Lambada transitions
+//                            --prevState;
                         }
-                        System.out.println("| | | |");
                     }
-                    System.out.println("| |");
+
+//                    AFN.printMagenta(false, String.valueOf(stateCounter));
+//                    AFN.printMagenta(true, String.valueOf(rulesList));
                 }
             }
             System.out.println("--------");
+
+            System.out.println("Transitions");
+            for (int i = 0; i< transitions.size(); i++) {
+                System.out.print("[");
+                System.out.print(i + ": ");
+                System.out.print("  [");
+                List<Set<Integer>> stateTransistions = transitions.get(i);
+                for (int j = 0; j < stateTransistions.size(); j++) {
+                    System.out.print(stateTransistions.get(j) + ", ");
+                }
+                System.out.println("]");
+            }
 
             for (List<Set<Integer>> symbolTransitions : transitions) {
                 for (Set<Integer> stateTransition : symbolTransitions) {
