@@ -192,21 +192,42 @@ public class Gramatica {
                 }
                 System.out.println("]");
             }
+            int symbolCounter = 0; // Inicializa un contador para llevar el seguimiento de las transiciones de símbolos
 
-            for (List<Set<Integer>> symbolTransitions : transitions) {
-                for (Set<Integer> stateTransition : symbolTransitions) {
-                    if (stateTransition.isEmpty()) {
-                        out.print("0,");
-                    } else {
-                        List<String> stateList = new ArrayList<>();
-                        for (Integer state : stateTransition) {
-                            stateList.add(state.toString());
+            for (List<Set<Integer>> symbolTransitions : transitions) { // Itera sobre cada conjunto de transiciones simbólicas
+            
+                // Verifica si es la primera transición
+                boolean isFirstTransition = symbolCounter == 0; // Verifica si el contador de símbolos es 0, lo que significa que es la primera transición
+            
+                symbolCounter++; // Incrementa el contador de símbolos
+            
+                for (Set<Integer> stateTransition : symbolTransitions) { // Itera sobre cada conjunto de transiciones de estado dentro de la transición simbólica
+            
+                    if (isFirstTransition && stateTransition.isEmpty()) { // Si es la primera transición y el conjunto de transiciones de estado está vacío
+            
+                        // Si es la primera transición y el estado es vacío, imprime el estado actual
+                        out.print(currentState + ","); // Imprime el estado actual seguido de una coma
+            
+                    } else if (stateTransition.isEmpty()) { // Si no es la primera transición y el conjunto de transiciones de estado está vacío
+            
+                        out.print("0,"); // Imprime "0," para indicar que no hay transición
+            
+                    } else { // Si el conjunto de transiciones de estado no está vacío
+            
+                        List<String> stateList = new ArrayList<>(); // Crea una lista para almacenar los estados como cadenas
+            
+                        for (Integer state : stateTransition) { // Itera sobre cada estado en el conjunto de transiciones de estado
+                            stateList.add(state.toString()); // Agrega el estado a la lista como una cadena
                         }
-                        out.print(String.join(";", stateList) + ",");
+            
+                        out.print(String.join(";", stateList) + ","); // Imprime los estados en la lista separados por punto y coma, seguidos de una coma
                     }
                 }
-                out.println();
+            
+                out.println(); // Imprime un salto de línea después de procesar todas las transiciones de estado para un símbolo
             }
+            
+            
         }
     }
 
