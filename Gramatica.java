@@ -54,7 +54,8 @@ public class Gramatica {
             int currentState = 1; // Estado inicial 1
 //            System.out.println("currentState = " + currentState);
 //            System.out.println("currentState++ = " + currentState++);
-            stateMap.put(startSymbol, currentState++); // W, 2
+
+            stateMap.put(startSymbol, currentState++); // W, 1
 
             for (String nt : nonTerminals) { // [W, X, Y, Z]
                 if (!stateMap.containsKey(nt)) {
@@ -87,7 +88,7 @@ public class Gramatica {
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey(); // W
 
-                int fromState = stateMap.get(fromNonTerminal); // 2
+                int fromState = stateMap.get(fromNonTerminal); // 1
 
                 System.out.println("PRODUCTIONS: loop " + loopProductionsCounter++ + "/" + (productions.size()));
                 System.out.print("|- fromNonTerminal: " + entry.getKey() + ", ");
