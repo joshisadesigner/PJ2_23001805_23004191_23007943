@@ -116,16 +116,16 @@ public class Gramatica {
                             }
 
                             AFN.printMagenta(AFN.ANSI_YELLOW, true, "|  |- symbol: " + symbol + ", line: " + symbolIndex );
-                            System.out.println("|  |  |- prevState: " + prevState + ", ");
-                            System.out.println("|  |  |- nextState = " + nextState + ", ");
-                            System.out.println("|  |  |- symbolIndex: " + symbolIndex + ", ");
+                            System.out.println("|  |  |- Row : " + symbolIndex + ", ");
+                            System.out.println("|  |  |- Col : " + prevState + ", ");
+                            System.out.println("|  |  |- Num : " + nextState + ", ");
                             System.out.println("|  |  |- fromState: " + fromState + ", ");
 
                             transitions.get(symbolIndex).get(prevState).add(String.valueOf(nextState));
 
                         } else if (nonTerminals.contains(symbol)) {
                             nextState = stateMap.get(symbol);
-                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "|  |- *symbol: " + symbol + ", line: 0" );
+                            AFN.printMagenta(AFN.ANSI_GREEN, true, "|  |- *symbol: " + symbol + ", line: 0" );
                             System.out.println("|  |  |- *prevState: " + prevState + ", ");
                             System.out.println("|  |  |- *nextState = " + nextState + ", ");
                             System.out.println("|  |  |- *fromState: " + fromState + ", ");
