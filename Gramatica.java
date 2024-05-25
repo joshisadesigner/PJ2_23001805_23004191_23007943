@@ -49,11 +49,10 @@ public class Gramatica {
 
         try (PrintWriter out = new PrintWriter(afnPath)) {
             out.println(String.join(",", terminals)); // [a,b,c,d]
-            int stateCount;
             Map<String, Integer> stateMap = new HashMap<>();
+            ArrayList<String> rulesList = new ArrayList<>();
+            int stateCount;
             int currentState = 1; // Estado inicial 1
-//            System.out.println("currentState = " + currentState);
-//            System.out.println("currentState++ = " + currentState++);
 
             stateMap.put(startSymbol, currentState++); // W, 1
 
@@ -77,106 +76,63 @@ public class Gramatica {
                 transitions.add(stateTransitions);
             }
 
-            System.out.println("Transitions");
-            for (int i = 0; i< transitions.size(); i++) {
-                System.out.print("[");
-                System.out.print(i + ": ");
-                System.out.print("  [");
-                List<Set<String>> stateTransistions = transitions.get(i);
-                for (int j = 0; j < stateTransistions.size(); j++) {
-                    System.out.print(stateTransistions.get(j) + ", ");
-                }
-                System.out.print("  ]");
-                System.out.println("]");
-            }
-
-            System.out.println("stateMap: \n[");
+            System.out.println("stateMap: [");
             for (Map.Entry<String, Integer> entry : stateMap.entrySet()) {
-                System.out.println("    Non-Terminal: " + entry.getKey() + ", State: " + entry.getValue());
+                System.out.println(" Non-Terminal: " + entry.getKey() + ", State: " + entry.getValue());
             }
             System.out.println("]\n--------");
 
-            int loopProductionsCounter = 1;
-
-            int stateCounter;
-            ArrayList<String> rulesList = new ArrayList<>();
-
             for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
                 String fromNonTerminal = entry.getKey(); // W
-
                 int fromState = stateMap.get(fromNonTerminal); // 1
+                int prevState = 0; // Para manjar las transiciones de Lambda, 2
+                int nextState;
 
-//                System.out.println("PRODUCTIONS: loop " + loopProductionsCounter++ + "/" + (productions.size()));
-//                System.out.print("|- fromNonTerminal: " + entry.getKey() + ", ");
-//                System.out.println("fromState: " + fromState);
                 System.out.println("entry: " + entry);
 
-                int loopEntryCounter = 1;
-                int prevState = 0; // Para manjar las transiciones de Lambda, 2
-
                 for (String rule : entry.getValue()) {
-//                    System.out.println("| |- ENTRY: loop " + loopEntryCounter++ + "/" + (entry.getValue().size()));
-//                    System.out.print("| | |- Rule: " + rule + ", ");
-                    AFN.printMagenta("", true, "| |- Rule: " + rule + ", ");
+                    AFN.printMagenta("", true, "|- Rule: " + rule + ", ");
 
                     if (!rulesList.contains(rule)) {
                         rulesList.add(rule);
                     }
 
-                    stateCounter = rulesList.indexOf(rule);
-
                     for (int i = 0; i < rule.length(); i++) {
                         String symbol = String.valueOf(rule.charAt(i));
 
-//                        System.out.println("| | | |- RULE: loop " + (i + 1) + "/" + rule.length());
-//                        System.out.print("| | | | |- symbol: " + symbol + ", ");
-
                         if (terminals.contains(symbol)) {
-                            int symbolIndex = terminals.indexOf(symbol) + 1; //1
-                            int nextState;
+                            int symbolIndex = terminals.indexOf(symbol) + 1; // debug only
 
                             if (i == rule.length() - 1) { // 2 = 2
                                 nextState = ++fromState; // 6
-//                                System.out.print("rule loop final... ");
                                 ++prevState;
                             } else {
                                 if (Character.isUpperCase(rule.charAt(i + 1))) {
                                     nextState = stateMap.get(String.valueOf(rule.charAt(i + 1))) + 1;
                                     ++prevState;
-
-//                                    System.out.println("| | |- nextCharUpper: " + Character.isUpperCase(rule.charAt(i + 1)) + ", ");
-
-//                                    i++;
                                 } else {
                                     nextState = fromState + 1;
-//                                    currentState = nextState;
                                 }
                             }
 
-                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "| | |- symbol: " + symbol + ", ");
-                            System.out.println("| | |- prevState: " + prevState + ", ");
-                            System.out.println("| | |- nextState = " + nextState + ", ");
-                            System.out.println("| | |- symbolIndex: " + symbolIndex + ", ");
-                            System.out.println("| | |- stateCounter = " + stateCounter + ", ");
-                            System.out.println("| | |- fromState: " + fromState + ", ");
-                            System.out.println("| | ");
+                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "|  |- symbol: " + symbol + ", line: " + symbolIndex );
+                            System.out.println("|  |  |- prevState: " + prevState + ", ");
+                            System.out.println("|  |  |- nextState = " + nextState + ", ");
+                            System.out.println("|  |  |- symbolIndex: " + symbolIndex + ", ");
+                            System.out.println("|  |  |- fromState: " + fromState + ", ");
 
                             transitions.get(symbolIndex).get(prevState).add(String.valueOf(nextState));
 
                         } else if (nonTerminals.contains(symbol)) {
-                            int nextState = stateMap.get(symbol);
-                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "| | |- *symbol: " + symbol + ", ");
-                            System.out.println("| | |- *prevState: " + prevState + ", ");
-                            System.out.println("| | |- *nextState = " + nextState + ", ");
-                            System.out.println("| | |- *fromState: " + fromState + ", ");
-                            System.out.println("| | ");
+                            nextState = stateMap.get(symbol);
+                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "|  |- *symbol: " + symbol + ", line: 0" );
+                            System.out.println("|  |  |- *prevState: " + prevState + ", ");
+                            System.out.println("|  |  |- *nextState = " + nextState + ", ");
+                            System.out.println("|  |  |- *fromState: " + fromState + ", ");
 
                             transitions.get(0).get(prevState).add(String.valueOf(nextState)); // Lambada transitions
                         }
                     }
-
-//                    AFN.printMagenta("", false, String.valueOf(stateCounter));
-//                    AFN.printMagenta("", true, String.valueOf(rulesList));
                 }
             }
             System.out.println("--------");
