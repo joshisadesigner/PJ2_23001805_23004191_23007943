@@ -33,9 +33,9 @@ public class Gramatica {
         System.out.println("startSymbol: " + startSymbol + "\n--------");
 
         // Imprimir el Map
-        AFN.printMagenta(true, "Productions:");
+        AFN.printMagenta("", true, "Productions:");
         for (Map.Entry<String, List<String>> entry : productions.entrySet()) {
-            AFN.printMagenta(true, entry.getKey() + " -> " + String.join(" | ", entry.getValue()));
+            AFN.printMagenta("", true, entry.getKey() + " -> " + String.join(" | ", entry.getValue()));
         }
         System.out.println("--------");
     }
@@ -117,7 +117,7 @@ public class Gramatica {
                 for (String rule : entry.getValue()) {
 //                    System.out.println("| |- ENTRY: loop " + loopEntryCounter++ + "/" + (entry.getValue().size()));
 //                    System.out.print("| | |- Rule: " + rule + ", ");
-                    AFN.printMagenta(true, "| |- Rule: " + rule + ", ");
+                    AFN.printMagenta("", true, "| |- Rule: " + rule + ", ");
 
                     if (!rulesList.contains(rule)) {
                         rulesList.add(rule);
@@ -153,11 +153,11 @@ public class Gramatica {
                                 }
                             }
 
-                            System.out.println("| | |- symbolIndex: " + symbolIndex + ", ");
+                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "| | |- symbol: " + symbol + ", ");
                             System.out.println("| | |- prevState: " + prevState + ", ");
                             System.out.println("| | |- nextState = " + nextState + ", ");
+                            System.out.println("| | |- symbolIndex: " + symbolIndex + ", ");
                             System.out.println("| | |- stateCounter = " + stateCounter + ", ");
-                            System.out.println("| | |- symbol: " + symbol + ", ");
                             System.out.println("| | |- fromState: " + fromState + ", ");
                             System.out.println("| | ");
 
@@ -165,7 +165,7 @@ public class Gramatica {
 
                         } else if (nonTerminals.contains(symbol)) {
                             int nextState = stateMap.get(symbol);
-                            System.out.println("| | |- *symbol: " + symbol + ", ");
+                            AFN.printMagenta(AFN.ANSI_YELLOW, true, "| | |- *symbol: " + symbol + ", ");
                             System.out.println("| | |- *prevState: " + prevState + ", ");
                             System.out.println("| | |- *nextState = " + nextState + ", ");
                             System.out.println("| | |- *fromState: " + fromState + ", ");
@@ -175,8 +175,8 @@ public class Gramatica {
                         }
                     }
 
-//                    AFN.printMagenta(false, String.valueOf(stateCounter));
-//                    AFN.printMagenta(true, String.valueOf(rulesList));
+//                    AFN.printMagenta("", false, String.valueOf(stateCounter));
+//                    AFN.printMagenta("", true, String.valueOf(rulesList));
                 }
             }
             System.out.println("--------");

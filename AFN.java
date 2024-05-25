@@ -27,7 +27,7 @@ public class AFN {
         Puede utilizar la estructura de datos que desee
     */
 	public static void printMagenta(String color, boolean newLine, String... messages) {
-		System.out.print((color == null) ? ANSI_MAGENTA : color);
+		System.out.print((color == "") ? ANSI_MAGENTA : color);
 
 		for (String msg : messages) {
 			System.out.print(msg + " ");
@@ -107,7 +107,7 @@ public class AFN {
 	// Método para imprimir tabla de transiciones, útil para depuración
 	public void printTransitionsTable(int maxSymbols, int maxStates) {
 		System.out.format("%-10s %-20s %s%n", "Símbolo", "Estado", "Transiciones");
-		printMagenta(true, "---------------------------------------------------------");
+		printMagenta("", true, "---------------------------------------------------------");
 		for (int i = 0; i < maxSymbols; i++) {
 			String symbol = (i == 0) ? "λ" : alphabet[i - 1];
 			for (int j = 0; j < maxStates; j++) {
