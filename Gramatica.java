@@ -68,9 +68,9 @@ public class Gramatica {
             out.println(stateCount);
             out.println(finalState);
 
-            List<List<Set<Integer>>> transitions = new ArrayList<>();
+            List<List<Set<String>>> transitions = new ArrayList<>();
             for (int i = 0; i <= terminals.size(); i++) { // Incluye transición de Lambda
-                List<Set<Integer>> stateTransitions = new ArrayList<>();
+                List<Set<String>> stateTransitions = new ArrayList<>();
                 for (int j = 0; j < currentState; j++) {
                     stateTransitions.add(new HashSet<>());
                 }
@@ -82,7 +82,7 @@ public class Gramatica {
                 System.out.print("[");
                 System.out.print(i + ": ");
                 System.out.print("  [");
-                List<Set<Integer>> stateTransistions = transitions.get(i);
+                List<Set<String>> stateTransistions = transitions.get(i);
                 for (int j = 0; j < stateTransistions.size(); j++) {
                     System.out.print(stateTransistions.get(j) + ", ");
                 }
@@ -161,7 +161,7 @@ public class Gramatica {
                             System.out.println("| | |- fromState: " + fromState + ", ");
                             System.out.println("| | ");
 
-                            transitions.get(symbolIndex).get(prevState).add(nextState);
+                            transitions.get(symbolIndex).get(prevState).add(entry.getKey() + i);
 
                         } else if (nonTerminals.contains(symbol)) {
                             int nextState = stateMap.get(symbol);
@@ -171,7 +171,7 @@ public class Gramatica {
                             System.out.println("| | |- *fromState: " + fromState + ", ");
                             System.out.println("| | ");
 
-                            transitions.get(0).get(prevState).add(nextState); // Lambada transitions
+                            transitions.get(0).get(prevState).add(entry.getKey() + i); // Lambada transitions
                         }
                     }
 
@@ -186,22 +186,22 @@ public class Gramatica {
                 System.out.print("[");
                 System.out.print(i + ": ");
                 System.out.print("  [");
-                List<Set<Integer>> stateTransistions = transitions.get(i);
+                List<Set<String>> stateTransistions = transitions.get(i);
                 for (int j = 0; j < stateTransistions.size(); j++) {
-                    System.out.print(stateTransistions.get(j) + ", ");
+                    System.out.print(stateTransistions.get(j) + ((j == stateTransistions.size() - 1) ? "" : ", "));
                 }
                 System.out.println("]");
             }
             int symbolCounter = 0; // Inicializa un contador para llevar el seguimiento de las transiciones de símbolos
 
-            for (List<Set<Integer>> symbolTransitions : transitions) { // Itera sobre cada conjunto de transiciones simbólicas
+            for (List<Set<String>> symbolTransitions : transitions) { // Itera sobre cada conjunto de transiciones simbólicas
             
                 // Verifica si es la primera transición
                 boolean isFirstTransition = symbolCounter == 0; // Verifica si el contador de símbolos es 0, lo que significa que es la primera transición
             
                 symbolCounter++; // Incrementa el contador de símbolos
             
-                for (Set<Integer> stateTransition : symbolTransitions) { // Itera sobre cada conjunto de transiciones de estado dentro de la transición simbólica
+                for (Set<String> stateTransition : symbolTransitions) { // Itera sobre cada conjunto de transiciones de estado dentro de la transición simbólica
             
                     if (isFirstTransition && stateTransition.isEmpty()) { // Si es la primera transición y el conjunto de transiciones de estado está vacío
             
@@ -216,7 +216,7 @@ public class Gramatica {
             
                         List<String> stateList = new ArrayList<>(); // Crea una lista para almacenar los estados como cadenas
             
-                        for (Integer state : stateTransition) { // Itera sobre cada estado en el conjunto de transiciones de estado
+                        for (String state : stateTransition) { // Itera sobre cada estado en el conjunto de transiciones de estado
                             stateList.add(state.toString()); // Agrega el estado a la lista como una cadena
                         }
             
