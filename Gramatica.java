@@ -183,14 +183,12 @@ public class Gramatica {
 
             System.out.println("Transitions");
             for (int i = 0; i< transitions.size(); i++) {
-                System.out.print("[");
-                System.out.print(i + ": ");
-                System.out.print("  [");
+                System.out.print(((i == 0) ? "λ" : terminals.get(i - 1)) + ": ");
                 List<Set<String>> stateTransistions = transitions.get(i);
                 for (int j = 0; j < stateTransistions.size(); j++) {
-                    System.out.print(stateTransistions.get(j) + ((j == stateTransistions.size() - 1) ? "" : ", "));
+                    System.out.print(stateTransistions.get(j) + ((j == stateTransistions.size() - 1) ? "" : ","));
                 }
-                System.out.println("]");
+                System.out.println();
             }
             int symbolCounter = 0; // Inicializa un contador para llevar el seguimiento de las transiciones de símbolos
 
