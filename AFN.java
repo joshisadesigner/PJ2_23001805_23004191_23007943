@@ -15,6 +15,8 @@ public class AFN {
 
 	// Constantes para manejo de color en la consola
 	public static final String ANSI_MAGENTA = "\033[0;35m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_RESET = "\u001B[0m";
 
 	/*
@@ -24,8 +26,9 @@ public class AFN {
         la informacion del AFN (i.e. "Documentos/archivo.AFN").
         Puede utilizar la estructura de datos que desee
     */
-	public static void printMagenta(boolean newLine, String... messages) {
-		System.out.print(ANSI_MAGENTA);
+	public static void printMagenta(String color, boolean newLine, String... messages) {
+		System.out.print((color == null) ? ANSI_MAGENTA : color);
+
 		for (String msg : messages) {
 			System.out.print(msg + " ");
 		}
