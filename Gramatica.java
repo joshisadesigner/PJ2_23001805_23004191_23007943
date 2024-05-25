@@ -161,7 +161,7 @@ public class Gramatica {
                             System.out.println("| | |- fromState: " + fromState + ", ");
                             System.out.println("| | ");
 
-                            transitions.get(symbolIndex).get(prevState).add(entry.getKey() + i);
+                            transitions.get(symbolIndex).get(prevState).add(String.valueOf(nextState));
 
                         } else if (nonTerminals.contains(symbol)) {
                             int nextState = stateMap.get(symbol);
@@ -171,7 +171,7 @@ public class Gramatica {
                             System.out.println("| | |- *fromState: " + fromState + ", ");
                             System.out.println("| | ");
 
-                            transitions.get(0).get(prevState).add(entry.getKey() + i); // Lambada transitions
+                            transitions.get(0).get(prevState).add(String.valueOf(nextState)); // Lambada transitions
                         }
                     }
 
@@ -195,35 +195,40 @@ public class Gramatica {
             int symbolCounter = 0; // Inicializa un contador para llevar el seguimiento de las transiciones de símbolos
 
             for (List<Set<String>> symbolTransitions : transitions) { // Itera sobre cada conjunto de transiciones simbólicas
-            
+
                 // Verifica si es la primera transición
                 boolean isFirstTransition = symbolCounter == 0; // Verifica si el contador de símbolos es 0, lo que significa que es la primera transición
-            
+
                 symbolCounter++; // Incrementa el contador de símbolos
-            
-                for (Set<String> stateTransition : symbolTransitions) { // Itera sobre cada conjunto de transiciones de estado dentro de la transición simbólica
-            
+
+                for (int i = 0; i < symbolTransitions.size(); i++) { // Itera sobre cada conjunto de transiciones de estado dentro de la transición simbólica
+                    Set<String> stateTransition = symbolTransitions.get(i);
+
                     if (isFirstTransition && stateTransition.isEmpty()) { // Si es la primera transición y el conjunto de transiciones de estado está vacío
-            
+
                         // Si es la primera transición y el estado es vacío, imprime el estado actual
-                        out.print(currentState + ","); // Imprime el estado actual seguido de una coma
-            
+                        out.print(currentState); // Imprime el estado actual seguido de una coma
+
                     } else if (stateTransition.isEmpty()) { // Si no es la primera transición y el conjunto de transiciones de estado está vacío
-            
-                        out.print("0,"); // Imprime "0," para indicar que no hay transición
-            
+
+                        out.print("0"); // Imprime "0," para indicar que no hay transición
+
                     } else { // Si el conjunto de transiciones de estado no está vacío
-            
+
                         List<String> stateList = new ArrayList<>(); // Crea una lista para almacenar los estados como cadenas
-            
+
                         for (String state : stateTransition) { // Itera sobre cada estado en el conjunto de transiciones de estado
                             stateList.add(state.toString()); // Agrega el estado a la lista como una cadena
                         }
-            
-                        out.print(String.join(";", stateList) + ","); // Imprime los estados en la lista separados por punto y coma, seguidos de una coma
+
+                        out.print(String.join(";", stateList)); // Imprime los estados en la lista separados por punto y coma, seguidos de una coma
+                    }
+
+                    if (i < symbolTransitions.size() - 1) { // Check if it's not the last element
+                        out.print(","); // Print a comma
                     }
                 }
-            
+
                 out.println(); // Imprime un salto de línea después de procesar todas las transiciones de estado para un símbolo
             }
             
