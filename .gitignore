@@ -1,6 +1,7 @@
 # Test Files
 *.temp.*
 *_temp_*
+*temp*
 
 PJ2_23001805_23004191_23007943.iml
 
