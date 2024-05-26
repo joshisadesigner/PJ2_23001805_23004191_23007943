@@ -91,7 +91,7 @@ public class Gramatica {
                 System.out.println("entry: " + entry);
 
                 for (String rule : entry.getValue()) {
-                    AFN.printMagenta("", true, "|- Rule: " + rule + ", ");
+                    AFN.printMagenta("", true, "|- Rule: " + rule);
 
                     if (!rulesList.contains(rule)) {
                         rulesList.add(rule);
@@ -116,19 +116,19 @@ public class Gramatica {
                             }
 
                             AFN.printMagenta(AFN.ANSI_YELLOW, true, "|  |- symbol: " + symbol + ", line: " + symbolIndex );
-                            System.out.println("|  |  |- Row : " + symbolIndex + ", ");
-                            System.out.println("|  |  |- Col : " + prevState + ", ");
-                            System.out.println("|  |  |- Num : " + nextState + ", ");
-                            System.out.println("|  |  |- fromState: " + fromState + ", ");
+                            System.out.println("|  |  |- Row    : " + symbolIndex);
+                            System.out.println("|  |  |- Col    : " + prevState);
+                            System.out.println("|  |  |- Insert : " + nextState);
 
                             transitions.get(symbolIndex).get(prevState).add(String.valueOf(nextState));
 
                         } else if (nonTerminals.contains(symbol)) {
                             nextState = stateMap.get(symbol);
                             AFN.printMagenta(AFN.ANSI_GREEN, true, "|  |- *symbol: " + symbol + ", line: 0" );
-                            System.out.println("|  |  |- *prevState: " + prevState + ", ");
-                            System.out.println("|  |  |- *nextState = " + nextState + ", ");
-                            System.out.println("|  |  |- *fromState: " + fromState + ", ");
+                            System.out.println("|  |  |- *Row   : 0 ");
+                            System.out.println("|  |  |- *Col   : " + prevState);
+                            System.out.println("|  |  |- *Insert: " + nextState);
+                            System.out.println("|  |  |- *fromState: " + fromState);
 
                             transitions.get(0).get(prevState).add(String.valueOf(nextState)); // Lambada transitions
                         }
